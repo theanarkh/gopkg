@@ -21,23 +21,30 @@ import (
 	"sync"
 )
 
+// 暴露一个全局（默认）的 Pool，用户只需要调用工具函数（工具函数操作默认的 Pool），而不需要显式创建一个 Pool
 // defaultPool is the global default pool.
 var defaultPool Pool
 
+// 保存多个 Poll，以 string 为 key
 var poolMap sync.Map
 
+// 加载该模块时，创建默认的 Poll
 func init() {
 	defaultPool = NewPool("gopool.DefaultPool", math.MaxInt32, NewConfig())
 }
 
 // Go is an alternative to the go keyword, which is able to recover panic.
-// gopool.Go(func(arg interface{}){
-//     ...
-// }(nil))
+//
+//	gopool.Go(func(arg interface{}){
+//	    ...
+//	}(nil))
+//
+// 工具函数，用户可以直接调该函数，不需要显式创建 Pool
 func Go(f func()) {
 	CtxGo(context.Background(), f)
 }
 
+// 同上面的 Go API
 // CtxGo is preferred than Go.
 func CtxGo(ctx context.Context, f func()) {
 	defaultPool.CtxGo(ctx, f)
@@ -61,6 +68,7 @@ func WorkerCount() int32 {
 // RegisterPool registers a new pool to the global map.
 // GetPool can be used to get the registered pool by name.
 // returns error if the same name is registered.
+// 注册 Pool
 func RegisterPool(p Pool) error {
 	_, loaded := poolMap.LoadOrStore(p.Name(), p)
 	if loaded {
