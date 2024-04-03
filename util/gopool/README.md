@@ -30,3 +30,5 @@ gopool.Go(func(){
 	/// do your job
 })
 ```
+
+<img width="512" alt="image" src="https://github.com/theanarkh/gopkg/assets/21155906/73d89786-27ef-4334-a8ab-62358d0be5bb">
